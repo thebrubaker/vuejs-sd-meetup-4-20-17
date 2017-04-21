@@ -14,6 +14,7 @@
     <input type="password" name="password" v-model="password">
     <button @click="login">Sign In</button>
     <button @click="register">Sign Up</button>
+    <button @click="logout">Sign out</button>
   </div>
 </template>
 
@@ -27,41 +28,61 @@ export default {
       messages: [],
       email: '',
       password: '',
-      message: ''
+      message: '',
+      user: ''
     }
+  },
+  computed: {
+
   },
   methods: {
     login () {
-      this.$firebase.auth()
+      firebase.auth()
         .signInWithEmailAndPassword(this.email, this.password)
-        .then(() => {
+        .then((user) => {
+          this.user = user
           console.log('success')
         })
         .catch(error => {
           console.log('No!!!!')
         })
     },
+    logout () {
+      firebase.auth().signOut().then(function() {
+        console.log('signed out')
+      }).catch(function(error) {
+        console.error('can\'t do it captn')
+      });
+    },
     register () {
-      this.$firebase.auth()
+      firebase.auth()
         .createUserWithEmailAndPassword(this.email, this.password).catch(function(error) {
             console.error(error)
         });
     },
     create () {
-      let key = this.$firebase.database().ref('messages').push({
+      let key = firebase.database().ref('messages').push({
         text: this.message,
-        user: 1
+        user: this.user
       }).then(() => {
         this.message = ''
       })
-      'pk.joel@gmail.com'
-      'joelisawesome'
     }
   },
   created () {
-    this.$firebase.database().ref('messages').on('value', snapshot => {
+    firebase.database().ref('messages').on('value', snapshot => {
       let messages = snapshot.val()
       this.messages = snapshot.val()
+    })
+  },
+  mounted () {
+    let that = this
+    firebase.auth().onAuthStateChanged(function(user) {
+      if (user) {
+        that.user = user.email
+      } else {
+        that.user = null
+      }
     })
   }
 }
