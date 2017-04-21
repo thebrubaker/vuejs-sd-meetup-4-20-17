@@ -3,14 +3,17 @@
     <ul v-for="message in messages">
       <li>{{ message.text }} - {{ message.user }}</li>
     </ul>
-
+    <br>
     <input type="text" name="message" v-model="message">
     <button @click="create">Create Message</button>
 
-
-    <input type="text" name="username" v-model="username">
+    <br>
+    <label for="email">Email</label>
+    <input type="text" name="email" v-model="email">
+    <label for="password">Password</label>
     <input type="password" name="password" v-model="password">
-    <button @click="login">Submit</button>
+    <button @click="login">Sign In</button>
+    <button @click="register">Sign Up</button>
   </div>
 </template>
 
@@ -22,7 +25,7 @@ export default {
   data () {
     return {
       messages: [],
-      username: '',
+      email: '',
       password: '',
       message: ''
     }
@@ -30,13 +33,19 @@ export default {
   methods: {
     login () {
       this.$firebase.auth()
-        .signInWithEmailAndPassword(this.username, this.password)
+        .signInWithEmailAndPassword(this.email, this.password)
         .then(() => {
           console.log('success')
         })
         .catch(error => {
           console.log('No!!!!')
         })
+    },
+    register () {
+      this.$firebase.auth()
+        .createUserWithEmailAndPassword(this.email, this.password).catch(function(error) {
+            console.error(error)
+        });
     },
     create () {
       let key = this.$firebase.database().ref('messages').push({
@@ -45,6 +54,8 @@ export default {
       }).then(() => {
         this.message = ''
       })
+      'pk.joel@gmail.com'
+      'joelisawesome'
     }
   },
   created () {
