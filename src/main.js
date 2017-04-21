@@ -16,8 +16,9 @@ var config = {
   messagingSenderId: "463478566258"
 }
 
-Vue.prototype.$firebase = firebase.initializeApp(config)
-
+let instance = firebase.initializeApp(config)
+Vue.prototype.$firebase = instance
+Window.firebase = instance
 
 /* eslint-disable no-new */
 new Vue({
