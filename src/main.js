@@ -16,7 +16,7 @@ var config = {
   messagingSenderId: "463478566258"
 }
 
-firebase.initializeApp(config)
+Vue.prototype.$firebase = firebase.initializeApp(config)
 
 
 /* eslint-disable no-new */
